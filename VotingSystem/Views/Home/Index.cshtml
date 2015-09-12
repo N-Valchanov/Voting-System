@@ -1,31 +1,85 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model VotingSystem.Models.InputModels.CreateQuestionInputModel
+
+@{
+    ViewBag.Title = "Voting System";
 }
 
 <div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+    <h1>@ViewBag.Title</h1>
 </div>
 
 <div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
+    @using (Html.BeginForm("Create", "Questions", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, string.Empty, new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(m => m.Content, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Content, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Content)
+            </div>
+        </div>
+
+        <div id="answers-container">
+            @for (int i = 0; i < Model.Answers.Count; i++)
+            {
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Answers[i], "Answer #" + (i + 1) + ":", new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.Answers[i], new { @class = "form-control answer-input" })
+                        @Html.ValidationMessageFor(m => m.Answers[i])
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="row">
+            <div class="col-md-offset-4">
+                <button type="button" class="btn btn-link" id="add-answer-btn">Add answer</button>
+            </div>
+        </div>
+
+        @*<label for="Answers_1" class="col-md-2 control-label">Answer #1:</label>
+            <div class="col-md-10">
+                <input type="text" name="Answers" id="Answers_1" value=""
+            </div>*@
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.RequireNames, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.CheckBoxFor(m => m.RequireNames, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.RequireNames)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-success" value="Create" />
+            </div>
+        </div>
+    }
 </div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(function () {
+            $('#add-answer-btn').click(function () {
+                var answersCount = $('.answer-input').length;
+
+                var newAnswer =
+                    $('<div class="form-group">\
+                            <label class="col-md-2 control-label" for="Answers_'+ answersCount + '_">Answer #' + (answersCount + 1) + ':</label>\
+                            <div class="col-md-10">\
+                                <input class="form-control answer-input" id="Answers_' + answersCount + '_" name="Answers[' + answersCount + ']" value="" type="text">\
+                                <span class="field-validation-valid" data-valmsg-for="Answers[' + answersCount + ']" data-valmsg-replace="true"></span>\
+                            </div>\
+                        </div>');
+
+                $('#answers-container').append(newAnswer);
+            });
+        });
+    </script>
+}
