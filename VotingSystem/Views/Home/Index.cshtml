@@ -5,7 +5,7 @@
 }
 
 <div class="jumbotron">
-    <h1>@ViewBag.Title</h1>
+    <h1 class="text-center">@ViewBag.Title</h1>
 </div>
 
 <div class="row">
@@ -15,7 +15,7 @@
         @Html.ValidationSummary(true, string.Empty, new { @class = "text-danger" })
         <div class="form-group">
             @Html.LabelFor(m => m.Content, new { @class = "col-md-2 control-label" })
-            <div class="col-md-10">
+            <div class="col-md-9">
                 @Html.TextBoxFor(m => m.Content, new { @class = "form-control" })
                 @Html.ValidationMessageFor(m => m.Content)
             </div>
@@ -26,26 +26,35 @@
             {
                 <div class="form-group">
                     @Html.LabelFor(m => m.Answers[i], "Answer #" + (i + 1) + ":", new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
+                    <div class="col-md-9">
                         @Html.TextBoxFor(m => m.Answers[i], new { @class = "form-control answer-input" })
                         @Html.ValidationMessageFor(m => m.Answers[i])
                     </div>
                 </div>
             }
         </div>
-
         <div class="row">
-            <div class="col-md-offset-4">
-                <button type="button" class="btn btn-link" id="add-answer-btn">Add answer</button>
+            <div class="form-group">
+                @Html.LabelFor(m => m.RequireNames, new { @class = "col-md-2 control-label" })
+                <div class="col-md-1">
+                    @Html.CheckBoxFor(m => m.RequireNames, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.RequireNames)
+                </div>
+                <div class="col-md-2">
+                    <input type="submit" class="btn btn-success" value="Create" />
+                </div>
+                <div class="col-md-offset-4 col-md-1">
+                    <button type="button" class="btn btn-info" id="add-answer-btn">Add answer</button>
+                </div>
             </div>
         </div>
+        @*<div class="row">
+            <div class="col-md-4">
+                <button type="button" class="btn btn-default" id="add-answer-btn">Add answer</button>
+            </div>
+        </div>*@
 
-        @*<label for="Answers_1" class="col-md-2 control-label">Answer #1:</label>
-            <div class="col-md-10">
-                <input type="text" name="Answers" id="Answers_1" value=""
-            </div>*@
-
-        <div class="form-group">
+        @*<div class="form-group">
             @Html.LabelFor(m => m.RequireNames, new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
                 @Html.CheckBoxFor(m => m.RequireNames, new { @class = "form-control" })
@@ -57,9 +66,9 @@
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" class="btn btn-success" value="Create" />
             </div>
-        </div>
+        </div>*@
     }
-</div>
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
@@ -72,7 +81,7 @@
                 var newAnswer =
                     $('<div class="form-group">\
                             <label class="col-md-2 control-label" for="Answers_'+ answersCount + '_">Answer #' + (answersCount + 1) + ':</label>\
-                            <div class="col-md-10">\
+                            <div class="col-md-9">\
                                 <input class="form-control answer-input" id="Answers_' + answersCount + '_" name="Answers[' + answersCount + ']" value="" type="text">\
                                 <span class="field-validation-valid" data-valmsg-for="Answers[' + answersCount + ']" data-valmsg-replace="true"></span>\
                             </div>\
