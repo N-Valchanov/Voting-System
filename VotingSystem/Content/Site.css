@@ -1,5 +1,5 @@
 ﻿body {
-    padding-top: 50px;
+    padding-top: 0px;
     padding-bottom: 20px;
 }
 
@@ -18,6 +18,8 @@
 input[type=text]{
      max-width: 100% 
 }
+
+
 /* Set width on the form input elements since they're 100% wide by default */
 input,
 select,

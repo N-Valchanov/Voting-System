@@ -8,6 +8,6 @@ namespace VotingSystem.Controllers
         public ActionResult Index()
         {
             return View(new CreateQuestionInputModel());
-        }        
+        }
     }
 }

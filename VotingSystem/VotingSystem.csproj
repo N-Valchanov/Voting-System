@@ -132,6 +132,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\QuestionsController.cs" />
+    <Compile Include="Controllers\VoteController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -139,6 +140,7 @@
       <DependentUpon>VotingSystemEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\InputModels\CreateQuestionInputModel.cs" />
+    <Compile Include="Models\InputModels\SubmitVoteInputModel.cs" />
     <Compile Include="Models\Question.cs">
       <DependentUpon>VotingSystemEntities.tt</DependentUpon>
     </Compile>
@@ -212,6 +214,8 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Vote.cshtml" />
+    <Content Include="Views\Vote\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

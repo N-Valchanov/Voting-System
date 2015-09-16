@@ -1,0 +1,44 @@
+﻿@model VotingSystem.Models.InputModels.SubmitVoteInputModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    @using (Html.BeginForm("SumbitVote", "Vote", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            @Html.LabelFor(m => m.Content, new { @class = "col-md-2 control-label" })
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.Content, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Content)
+            </div>
+        </div>
+
+        <div id="answers-container">
+            @for (int i = 0; i < Model.Answers.Count; i++)
+            {
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Answers[i], "Answer #" + (i + 1) + ":", new { @class = "col-md-2 control-label" })
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(m => m.Answers[i], new { @class = "form-control answer-input" })
+                        @Html.ValidationMessageFor(m => m.Answers[i])
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="row">
+            <div class="form-group">
+                @Html.LabelFor(m => m.RequireNames, new { @class = "col-md-2 control-label" })
+                <div class="col-md-1">
+                    @Html.CheckBoxFor(m => m.RequireNames, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.RequireNames)
+                </div>
+                <div class="col-md-2">
+                    <input type="submit" class="btn btn-success" value="Create Poll" />
+                </div>
+                <div class="col-md-offset-3 col-md-1">
+                    <button type="button" class="btn btn-info" id="add-answer-btn">Add an additional answer</button>
+                </div>
+            </div>
+        </div>

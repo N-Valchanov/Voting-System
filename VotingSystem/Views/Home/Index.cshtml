@@ -1,12 +1,10 @@
 ﻿@model VotingSystem.Models.InputModels.CreateQuestionInputModel
 
 @{
-    ViewBag.Title = "Voting System";
+    ViewBag.Title = "Quick Poll";
 }
 
-<div class="jumbotron">
-    <h1 class="text-center">@ViewBag.Title</h1>
-</div>
+
 
 <div class="row">
     @using (Html.BeginForm("Create", "Questions", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
@@ -41,10 +39,10 @@
                     @Html.ValidationMessageFor(m => m.RequireNames)
                 </div>
                 <div class="col-md-2">
-                    <input type="submit" class="btn btn-success" value="Create" />
+                    <input type="submit" class="btn btn-success" value="Create Poll" />
                 </div>
-                <div class="col-md-offset-4 col-md-1">
-                    <button type="button" class="btn btn-info" id="add-answer-btn">Add answer</button>
+                <div class="col-md-offset-3 col-md-1">
+                    <button type="button" class="btn btn-info" id="add-answer-btn">Add an additional answer</button>
                 </div>
             </div>
         </div>
