@@ -17,8 +17,6 @@ namespace VotingSystem.Models.InputModels
         public bool NamesRequired { get; set; }
 
         [Display(Name = "Your Name:")]
-        [Required(ErrorMessage = "Please enter a valid Name")]
-        [StringLength(50, MinimumLength = 3, ErrorMessage = "Question content must be between 3 and 50 characters long.")]
         public string FullName { get; set; }
     }
 }

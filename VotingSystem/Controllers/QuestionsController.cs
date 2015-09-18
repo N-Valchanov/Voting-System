@@ -32,7 +32,7 @@ namespace VotingSystem.Controllers
                     context.Questions.Add(newQuestion);
                     context.SaveChanges();
 
-                    return this.Redirect("/" + newQuestion.UrlId);
+                    return Redirect("/Vote/Index/" + newQuestion.UrlId);
                 }
             }
 
