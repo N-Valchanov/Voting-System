@@ -21,7 +21,10 @@ namespace VotingSystem.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             var submitVoteForm = GetPollByUrlId(id);
-
+            if (submitVoteForm.QuestionContent == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+            }
             return View(submitVoteForm);
         }
         [HttpPost]
@@ -31,6 +34,19 @@ namespace VotingSystem.Controllers
             if (input == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (string.IsNullOrWhiteSpace(input.QuestionUrlId))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var pollInfo = GetPollByUrlId(input.QuestionUrlId);
+            if (pollInfo.QuestionContent == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+            }
+            if (pollInfo.NamesRequired)
+            {
+                ValidateName(input.FullName);
             }
             if (this.ModelState.IsValid)
             {
@@ -44,24 +60,17 @@ namespace VotingSystem.Controllers
                     };
                     this.Response.Cookies.Add(uidCookie);
                 }
+                
                 var db = new VotingSystemEntities();
                 var cookieID = uidCookie.Value;
                 var ip = Request.UserHostAddress.ToString();
-                var alrdyVoted = false;
-                var getQuestinoId = from questions in db.Questions
-                                    where questions.UrlId == input.QuestionUrlId
-                                    select questions.Id;
-                int x = getQuestinoId.First();
-                if (getQuestinoId== null)
-                {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                }
                 var checkIfVoted = from votes in db.Votes
-                                   where votes.QuestionId== x && (votes.Ip == ip || votes.SecretKey == cookieID)
+                                   where votes.QuestionId== pollInfo.QuestionId && (votes.Ip == ip || votes.SecretKey == cookieID)
                                    select votes;
                 if (checkIfVoted.Any())
                 {
-                    alrdyVoted = true;//To do: Validate Name, fix Result interactions
+                    pollInfo.AlrdyVoted = true;
+                    return View("~/Views/Vote/Index.cshtml", pollInfo);
                 }
                 var poll =from questions in db.Questions
                                       join answers in db.Answers on questions.Id equals answers.QuestionId
@@ -71,19 +80,18 @@ namespace VotingSystem.Controllers
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 }
-                var s = poll.First().Answers.ElementAt(input.AnswerPicked).Id;
                 Vote v = new Vote();
-                v.AnswerId = s;
+                v.AnswerId = poll.First().Answers.ElementAt(input.AnswerPicked).Id; ;
                 v.FullName = input.FullName;
                 v.Ip = ip;
                 v.QuestionId = poll.First().Id;
                 v.SecretKey = cookieID;
                 db.Votes.Add(v);
                 db.SaveChanges();
+             //To do: impliment result models   return Redirect("~View/Result/Index.cshtml",resultModel)
 
             }
-            var submitVoteForm = GetPollByUrlId(input.QuestionUrlId);
-            return View("~/Views/Vote/Index.cshtml", submitVoteForm);
+            return View("~/Views/Vote/Index.cshtml", pollInfo);
         }
         private SubmitVoteInputModel GetPollByUrlId(string id)
         {
@@ -92,15 +100,27 @@ namespace VotingSystem.Controllers
                        join answers in db.Answers on questions.Id equals answers.QuestionId
                        where questions.UrlId == id
                        select questions;
+            
             var submitVoteForm = new SubmitVoteInputModel();
-            foreach (var question in poll.First().Answers)
+            if (poll.Any())
             {
-                submitVoteForm.Answers.Add(question.Content);
+                foreach (var question in poll.First().Answers)
+                {
+                    submitVoteForm.Answers.Add(question.Content);
+                }
+                submitVoteForm.NamesRequired = poll.First().RequireNames;
+                submitVoteForm.QuestionContent = poll.First().Content;
+                submitVoteForm.QuestionId = poll.First().Id;
+                submitVoteForm.QuestionUrlId = id;
             }
-            submitVoteForm.NamesRequired = poll.First().RequireNames;
-            submitVoteForm.QuestionContent = poll.First().Content;
-            submitVoteForm.QuestionUrlId = id;
-            return submitVoteForm;
+            return submitVoteForm;            
+        }
+        private void ValidateName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                this.ModelState.AddModelError("FullName", "Please add your name");
+            }
         }
     }
 }

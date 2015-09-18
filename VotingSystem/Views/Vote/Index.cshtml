@@ -1,7 +1,9 @@
 ﻿@model VotingSystem.Models.InputModels.SubmitVoteInputModel
+
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Quick Poll";
 }
+
 
 <div class="row">
     @using (Html.BeginForm("SubmitVote", "Vote", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
@@ -9,7 +11,14 @@
         @Html.AntiForgeryToken()
         @Html.HiddenFor(m => m.QuestionUrlId)
         <div class="form-group">
-           <h1 class="text-center col-md-12">@Model.QuestionContent</h1>
+            @if (Model.AlrdyVoted)
+            {
+                <div class="text-center text-danger">
+                    <h1><strong>You have already voted!</strong></h1>
+
+                </div>
+            }
+            <h1 class="text-center col-md-12">@Model.QuestionContent</h1>
             <div>
                 @for (int i = 0; i < Model.Answers.Count(); i++)
                 {
@@ -19,49 +28,22 @@
                     </div>
                 }
             </div>
-                <div>
-                    @if (Model.NamesRequired)
-                    {
-                        <div class="form-group">
-                            @Html.LabelFor(m => m.FullName, new { @class = "col-md-offset-1 col-md-2 control-label" })
-                            <div class="col-md-8">
-                                @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
-                                @Html.ValidationMessageFor(m => m.FullName)
-                            </div>
+            <div>
+                @if (Model.NamesRequired)
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.FullName, new { @class = "col-md-offset-1 col-md-2 control-label" })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.FullName)
                         </div>
-                       
-                    }
-                    <div>
-                        <input type="submit" class="btn btn-success col-md-offset-3 col-md-2" value="Create Poll" />
                     </div>
-                </div>
-                    </div>
-        
-    }
-        @*<div id="answers-container">
-        @for (int i = 0; i < Model.Answers.Count; i++)
-        {
-            <div class="form-group">
-                @Html.LabelFor(m => m.Answers[i], "Answer #" + (i + 1) + ":", new { @class = "col-md-2 control-label" })
-                <div class="col-md-9">
-                    @Html.TextBoxFor(m => m.Answers[i], new { @class = "form-control answer-input" })
-                    @Html.ValidationMessageFor(m => m.Answers[i])
+
+                }
+                <div>
+                    <input type="submit" class="btn btn-success col-md-offset-3 col-md-2" value="Create Poll" />
                 </div>
             </div>
-        }
-    </div>
-    <div class="row">
-        <div class="form-group">
-            @Html.LabelFor(m => m.RequireNames, new { @class = "col-md-2 control-label" })
-            <div class="col-md-1">
-                @Html.CheckBoxFor(m => m.RequireNames, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.RequireNames)
-            </div>
-            <div class="col-md-2">
-                <input type="submit" class="btn btn-success" value="Create Poll" />
-            </div>
-            <div class="col-md-offset-3 col-md-1">
-                <button type="button" class="btn btn-info" id="add-answer-btn">Add an additional answer</button>
-            </div>
-        </div>*@
         </div>
+    }
+</div>
