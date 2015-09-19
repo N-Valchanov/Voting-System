@@ -142,9 +142,12 @@
     </Compile>
     <Compile Include="Models\InputModels\CreateQuestionInputModel.cs" />
     <Compile Include="Models\InputModels\SubmitVoteInputModel.cs" />
+    <Compile Include="Models\ResultHelperAnswers.cs" />
+    <Compile Include="Models\ResultHelperNamesVotedFor.cs" />
     <Compile Include="Models\Question.cs">
       <DependentUpon>VotingSystemEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ResultModel.cs" />
     <Compile Include="Models\Vote.cs">
       <DependentUpon>VotingSystemEntities.tt</DependentUpon>
     </Compile>
@@ -217,10 +220,10 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Vote.cshtml" />
     <Content Include="Views\Vote\Index.cshtml" />
+    <Content Include="Views\Result\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Result\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

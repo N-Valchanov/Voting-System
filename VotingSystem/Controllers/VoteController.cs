@@ -11,8 +11,7 @@ namespace VotingSystem.Controllers
 {
     public class VoteController : Controller
     {
-
-        
+        private VotingSystemEntities db = new VotingSystemEntities();
         // GET: Vote
         public ActionResult Index(string id)
         {
@@ -29,24 +28,24 @@ namespace VotingSystem.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult SubmitVote(SubmitVoteInputModel input)
+        public ActionResult SubmitVote(SubmitVoteInputModel inputModel)
         {
-            if (input == null)
+            if (inputModel == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            if (string.IsNullOrWhiteSpace(input.QuestionUrlId))
+            if (string.IsNullOrWhiteSpace(inputModel.QuestionUrlId))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var pollInfo = GetPollByUrlId(input.QuestionUrlId);
+            var pollInfo = GetPollByUrlId(inputModel.QuestionUrlId);
             if (pollInfo.QuestionContent == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }
             if (pollInfo.NamesRequired)
             {
-                ValidateName(input.FullName);
+                ValidateName(inputModel.FullName);
             }
             if (this.ModelState.IsValid)
             {
@@ -61,7 +60,7 @@ namespace VotingSystem.Controllers
                     this.Response.Cookies.Add(uidCookie);
                 }
                 
-                var db = new VotingSystemEntities();
+               
                 var cookieID = uidCookie.Value;
                 var ip = Request.UserHostAddress.ToString();
                 var checkIfVoted = from votes in db.Votes
@@ -74,15 +73,15 @@ namespace VotingSystem.Controllers
                 }
                 var poll =from questions in db.Questions
                                       join answers in db.Answers on questions.Id equals answers.QuestionId
-                                      where questions.UrlId == input.QuestionUrlId
+                                      where questions.UrlId == inputModel.QuestionUrlId
                                       select questions;
-                if (input.AnswerPicked>=poll.First().Answers.Count|| input.AnswerPicked<0)
+                if (inputModel.AnswerPicked>=poll.First().Answers.Count|| inputModel.AnswerPicked<0)
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 }
                 Vote v = new Vote();
-                v.AnswerId = poll.First().Answers.ElementAt(input.AnswerPicked).Id; ;
-                v.FullName = input.FullName;
+                v.AnswerId = poll.First().Answers.ElementAt(inputModel.AnswerPicked).Id; ;
+                v.FullName = inputModel.FullName;
                 v.Ip = ip;
                 v.QuestionId = poll.First().Id;
                 v.SecretKey = cookieID;
@@ -95,8 +94,7 @@ namespace VotingSystem.Controllers
         }
         private SubmitVoteInputModel GetPollByUrlId(string id)
         {
-            var db = new VotingSystemEntities();
-            var poll = from questions in db.Questions
+                var poll = from questions in db.Questions
                        join answers in db.Answers on questions.Id equals answers.QuestionId
                        where questions.UrlId == id
                        select questions;
