@@ -17,5 +17,6 @@ namespace VotingSystem.Models
         public string QuestionUrlId { get; set; }
         public string QuestionContent { get; set; }
         public bool NamesRequired { get; set; }
+        public int TotalVotes { get; set; }
     }
 }

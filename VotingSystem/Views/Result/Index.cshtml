@@ -1,5 +1,22 @@
-﻿@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+﻿@model VotingSystem.Models.ResultModel
+@{
+    ViewBag.Title = "Quick Poll";
 }
 
-
+<div class="row">
+    <div class="text-center">
+        <h1>@Model.QuestionContent</h1>
+    </div>
+        @foreach (var answer in Model.Answers)
+        {
+            <div class="col-md-offset-2 col-md-5">
+                @Html.Label(answer.answerContent)
+            </div>
+                <div class=" col-md-offset-1 col-md-4">
+                    <strong> @answer.percentageOftotalVotes</strong>
+                </div>
+              
+            
+        }
+    
+</div>

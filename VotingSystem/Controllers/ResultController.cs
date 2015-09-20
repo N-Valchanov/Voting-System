@@ -51,9 +51,11 @@ namespace VotingSystem.Controllers
             resultModel.QuestionContent = poll.First().Content;
             resultModel.QuestionUrlId = poll.First().UrlId;
             resultModel.NamesRequired = poll.First().RequireNames;
+            resultModel.TotalVotes = poll.First().Votes.Count;
             foreach (var answer in poll.First().Answers)
             {
                 resultModel.Answers.Add(new ResultHelperAnswers { answerContent = answer.Content, numVotes = answer.Votes.Count() });
+                resultModel.Answers.Last().PreparePercentage(resultModel.TotalVotes);
             }
             return resultModel;
         }
