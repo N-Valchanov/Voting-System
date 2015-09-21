@@ -13,17 +13,30 @@ namespace VotingSystem.Models
         }
         public string answerContent { get; set; }
         public int numVotes { get; set; }
-        public string percentageOftotalVotes { get; set; }
+        public string rawPercentage { get; set; }
+        public string PercentageForm { get; set; }
 
         public void PreparePercentage(int totalVotes)
         {
-            if (totalVotes == 0 || numVotes == 0)
+            string attachmentToPercent;
+            if (totalVotes == 1)
             {
-                percentageOftotalVotes = "0% (0 out of "+totalVotes+" votes )";
+                attachmentToPercent = totalVotes + " vote )";
             }
             else
             {
-                percentageOftotalVotes = decimal.Divide(numVotes, totalVotes).ToString("P2")+"  ("+numVotes+" out of "+totalVotes+" votes )";
+                attachmentToPercent = totalVotes + " votes )";
+            }
+            if (totalVotes == 0 || numVotes == 0)
+            {
+                rawPercentage = "0%";
+                PercentageForm =rawPercentage + " ( 0 out of " + attachmentToPercent;
+            }
+            else
+            {
+                rawPercentage = decimal.Divide(numVotes, totalVotes).ToString("P2");
+                rawPercentage= rawPercentage.Replace(" ", string.Empty);
+                PercentageForm =rawPercentage + "  ( " + numVotes + " out of " + attachmentToPercent;
             }
             
         }

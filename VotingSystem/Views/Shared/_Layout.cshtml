@@ -8,7 +8,7 @@
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    <a href="http://localhost:49751/Home/Index">
+    <a href=@Url.Action("Index", "Home")>
         <div class="jumbotron col-md-offset-1 col-md-10">
             <h1 class="text-center">
                 @ViewBag.Title

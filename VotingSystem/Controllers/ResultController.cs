@@ -34,7 +34,7 @@ namespace VotingSystem.Controllers
             {
                 foreach (var votes in resultFormHelper)
                 {
-                    resultModel.NamedVotes.Add(new ResultHelperNamesVotedFor { name = votes.FullName, answerVotedForId = votes.Answer.Content });
+                    resultModel.NamedVotes.Add(new ResultHelperNamesVotedFor { name = votes.FullName, answerVotedFor = votes.Answer.Content });
                 }
             }
             return View(resultModel);
@@ -57,6 +57,7 @@ namespace VotingSystem.Controllers
                 resultModel.Answers.Add(new ResultHelperAnswers { answerContent = answer.Content, numVotes = answer.Votes.Count() });
                 resultModel.Answers.Last().PreparePercentage(resultModel.TotalVotes);
             }
+            resultModel.Answers.Sort((x, y) => y.numVotes.CompareTo(x.numVotes));
             return resultModel;
         }
 
