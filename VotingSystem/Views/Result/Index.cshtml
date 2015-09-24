@@ -7,9 +7,9 @@
     <div class="text-center">
         <h1>@Model.QuestionContent</h1>
     </div>
-    
-       
- 
+
+
+
     @foreach (var answer in Model.Answers)
     {
         <div class="col-md-offset-1 col-md-10">
@@ -20,25 +20,25 @@
                 <strong> @answer.PercentageForm</strong>
             </div>
         </div>
-        <div class="progress col-md-12">
-           
-                <div class="progress-bar"style="width:@answer.rawPercentage">
-                    @answer.rawPercentage
-                </div>
-        
+        <div class="progress  col-md-12">
+
+            <div class="progress-bar" style="width:@answer.rawPercentage">
+                @answer.rawPercentage
             </div>
 
-            }
-            @if (Model.NamesRequired && Model.NamedVotes.Count() > 0)
-            {
-                <br /><br /><br />
-                foreach (var namedVote in Model.NamedVotes)
-                {
-                    <div class="col-md-offset-1 col-md-10 text-center">
-                        @namedVote.PrepareNamedVotes()
-                    </div>
-                }
-
-            }
-
         </div>
+
+    }
+    @if (Model.NamesRequired && Model.NamedVotes.Count() > 0)
+            {
+        <br /><br /><br />
+        foreach (var namedVote in Model.NamedVotes)
+        {
+            <div class="col-md-offset-1 col-md-10 text-center">
+                @namedVote.PrepareNamedVotes()
+            </div>
+        }
+
+    }
+
+</div>
