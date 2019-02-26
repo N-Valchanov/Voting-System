@@ -16,8 +16,8 @@ namespace VotingSystem.Models.InputModels
         public string QuestionContent { get; set; }
         public int AnswerPicked { get; set; }
         public List<string> Answers { get; set; }
-        public bool NamesRequired { get; set; }
         public bool AlrdyVoted { get; set; }
+        public bool NamesRequired { get; set; }
 
         [Display(Name = "Your Name:")]
         [StringLength(50, MinimumLength = 1, ErrorMessage = "Name can only be up to 50 characters long.")]

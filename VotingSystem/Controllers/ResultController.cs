@@ -12,38 +12,25 @@ namespace VotingSystem.Controllers
     {
         private VotingSystemEntities db = new VotingSystemEntities();
         // GET: Result
+        [HttpGet]
         public ActionResult Index(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ResultModel resultModel = new ResultModel();
-            var resultFormHelper = GetVotesById(id);
-            if (!resultFormHelper.Any())
+            var resultModel = GetResultModel(id);
+            if (resultModel.QuestionContent == null)
             {
-                resultModel = GetNamelessResultModel(id);
-                if (resultModel.QuestionContent == null)
-                {
-                    return new HttpStatusCodeResult(HttpStatusCode.NotFound);
-                }
-                return View(resultModel);
-            }
-            resultModel = GetNamelessResultModel(id);
-            if (resultModel.NamesRequired)
-            {
-                foreach (var votes in resultFormHelper)
-                {
-                    resultModel.NamedVotes.Add(new ResultHelperNamesVotedFor { name = votes.FullName, answerVotedFor = votes.Answer.Content });
-                }
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }
             return View(resultModel);
         }
 
-        private ResultModel GetNamelessResultModel(string id)
+        private ResultModel GetResultModel(string id)
         {
             ResultModel resultModel = new ResultModel();
-            var poll = GetPollById(id);            
+            var poll = GetPollById(id);
             if (!poll.Any())
             {
                 return resultModel;
@@ -57,19 +44,15 @@ namespace VotingSystem.Controllers
                 resultModel.Answers.Add(new ResultHelperAnswers { answerContent = answer.Content, numVotes = answer.Votes.Count() });
                 resultModel.Answers.Last().PreparePercentage(resultModel.TotalVotes);
             }
+            if (resultModel.NamesRequired && poll.First().Votes.Any())
+            {
+                foreach (var vote in poll.First().Votes)
+                {
+                    resultModel.NamedVotes.Add(new ResultHelperNamesVotedFor { Name = vote.FullName, AnswerVotedFor = vote.Answer.Content });
+                }
+            }
             resultModel.Answers.Sort((x, y) => y.numVotes.CompareTo(x.numVotes));
             return resultModel;
-        }
-
-        private IQueryable<Vote> GetVotesById (string id)
-        {
-            var vote =   from votes in db.Votes
-                           join answer in db.Answers on votes.AnswerId equals answer.Id
-                           join question in db.Questions on votes.QuestionId equals question.Id
-                           where question.UrlId == id && votes.QuestionId == question.Id
-                           orderby votes.AnswerId ascending
-                           select votes;
-            return vote;
         }
 
         private IQueryable<Question> GetPollById(string id)

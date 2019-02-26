@@ -131,26 +131,19 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\QuestionsController.cs" />
     <Compile Include="Controllers\ResultController.cs" />
     <Compile Include="Controllers\VoteController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Answer.cs">
-      <DependentUpon>VotingSystemEntities.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Models\Answer.cs" />
     <Compile Include="Models\InputModels\CreateQuestionInputModel.cs" />
     <Compile Include="Models\InputModels\SubmitVoteInputModel.cs" />
+    <Compile Include="Models\Question.cs" />
     <Compile Include="Models\ResultHelperAnswers.cs" />
     <Compile Include="Models\ResultHelperNamesVotedFor.cs" />
-    <Compile Include="Models\Question.cs">
-      <DependentUpon>VotingSystemEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\ResultModel.cs" />
-    <Compile Include="Models\Vote.cs">
-      <DependentUpon>VotingSystemEntities.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Models\Vote.cs" />
     <Compile Include="Models\VotingSystemEntities.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -206,7 +199,9 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

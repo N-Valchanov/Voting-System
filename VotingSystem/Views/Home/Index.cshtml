@@ -4,10 +4,8 @@
     ViewBag.Title = "Quick Poll";
 }
 
-
-
 <div class="row">
-    @using (Html.BeginForm("Create", "Questions", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    @using (Html.BeginForm("Index", "Home", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
     {
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true, string.Empty, new { @class = "text-danger" })

@@ -7,12 +7,9 @@ namespace VotingSystem.Models
 {
     public class ResultHelperNamesVotedFor
     {
-        public string name { get; set; }
-        public string answerVotedFor { get; set; }
+        public string Name { get; set; }
+        public string AnswerVotedFor { get; set; }
+        public string PreparedNamedVotes { get { return Name + " has voted: " + AnswerVotedFor; } }
 
-        public string PrepareNamedVotes()
-        {
-            return name + " has voted: " + answerVotedFor;
-        }
     }
 }

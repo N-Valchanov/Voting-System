@@ -13,6 +13,7 @@ namespace VotingSystem.Controllers
     {
         private VotingSystemEntities db = new VotingSystemEntities();
         // GET: Vote
+        [HttpGet]
         public ActionResult Index(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -43,6 +44,10 @@ namespace VotingSystem.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }
+            if (inputModel.AnswerPicked >= pollInfo.Answers.Count || inputModel.AnswerPicked < 0)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             if (pollInfo.NamesRequired)
             {
                 ValidateName(inputModel.FullName);
@@ -54,31 +59,28 @@ namespace VotingSystem.Controllers
                 {
                     uidCookie = new HttpCookie("uid")
                     {
-                        Expires = DateTime.Now.AddDays(30),
+                        Expires = DateTime.Now.AddDays(90),
                         Value = Guid.NewGuid().ToString()
                     };
                     this.Response.Cookies.Add(uidCookie);
                 }
-                
-               
+
+
                 var cookieID = uidCookie.Value;
                 var ip = Request.UserHostAddress.ToString();
                 var checkIfVoted = from votes in db.Votes
-                                   where votes.QuestionId== pollInfo.QuestionId && (votes.Ip == ip || votes.SecretKey == cookieID)
+                                   where votes.QuestionId == pollInfo.QuestionId && (votes.Ip == ip || votes.SecretKey == cookieID)
                                    select votes;
                 if (checkIfVoted.Any())
                 {
                     pollInfo.AlrdyVoted = true;
                     return View("~/Views/Vote/Index.cshtml", pollInfo);
                 }
-                var poll =from questions in db.Questions
-                                      join answers in db.Answers on questions.Id equals answers.QuestionId
-                                      where questions.UrlId == inputModel.QuestionUrlId
-                                      select questions;
-                if (inputModel.AnswerPicked>=poll.First().Answers.Count|| inputModel.AnswerPicked<0)
-                {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                }
+                var poll = from questions in db.Questions
+                           join answers in db.Answers on questions.Id equals answers.QuestionId
+                           where questions.UrlId == inputModel.QuestionUrlId
+                           select questions;
+
                 Vote v = new Vote();
                 v.AnswerId = poll.First().Answers.ElementAt(inputModel.AnswerPicked).Id; ;
                 v.FullName = inputModel.FullName;
@@ -87,18 +89,18 @@ namespace VotingSystem.Controllers
                 v.SecretKey = cookieID;
                 db.Votes.Add(v);
                 db.SaveChanges();
-             //To do: impliment result models   return Redirect("~View/Result/Index.cshtml",resultModel)
+                return Redirect("/Result/Index/" + inputModel.QuestionUrlId);
 
             }
             return View("~/Views/Vote/Index.cshtml", pollInfo);
         }
         private SubmitVoteInputModel GetPollByUrlId(string id)
         {
-                var poll = from questions in db.Questions
+            var poll = from questions in db.Questions
                        join answers in db.Answers on questions.Id equals answers.QuestionId
                        where questions.UrlId == id
                        select questions;
-            
+
             var submitVoteForm = new SubmitVoteInputModel();
             if (poll.Any())
             {
@@ -111,7 +113,7 @@ namespace VotingSystem.Controllers
                 submitVoteForm.QuestionId = poll.First().Id;
                 submitVoteForm.QuestionUrlId = id;
             }
-            return submitVoteForm;            
+            return submitVoteForm;
         }
         private void ValidateName(string name)
         {
